@@ -1,0 +1,13 @@
+package com.zain.alarmmanagerstandup.BlaBlas;
+
+import org.junit.Test;
+
+/////////////////////////////////////////////////////////////
+/////////// This is where your tests should go //////////////
+/////////////////////////////////////////////////////////////
+public class BillingTests {
+
+    @Test
+    public void yourTestsGoHere() {
+    }
+}
