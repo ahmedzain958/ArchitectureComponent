@@ -4,23 +4,23 @@ public class Vehicle {
     public static final int SUV = 2;
     public static final int SEDAN = 0;
     public static final int FOURxFOUR = 1;
-    private String _makeAndModel;
-    private int _rateCode;
+    private String mMakeAndModel;
+    private int mVehicleCategoryCode;
 
-    public Vehicle(String makeAndModel, int rateCode) {
-        _makeAndModel = makeAndModel;
-        _rateCode = rateCode;
+    public Vehicle(String makeAndModel, int vehicleCategoryCode) {
+        this.mMakeAndModel = makeAndModel;
+        this.mVehicleCategoryCode = vehicleCategoryCode;
     }
 
-    public int getRateCode() {
-        return _rateCode;
+    public int getVehicleCategoryCode() {
+        return mVehicleCategoryCode;
     }
 
-    public void setRateCode(int arg) {
-        _rateCode = arg;
+    public void setVehicleCategoryCode(int vehicleCategoryCode) {
+        mVehicleCategoryCode = vehicleCategoryCode;
     }
 
     public String getMakeAndModel() {
-        return _makeAndModel;
+        return mMakeAndModel;
     }
 }

@@ -4,103 +4,93 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Customer {
-    private String _name;
-    private ArrayList<Rental> _rentals = new ArrayList<>();
+    private String mCustomerName;
+    private ArrayList<Rental> mRentals = new ArrayList<>();
 
-    public Customer(String name) {
-        _name = name;
+    public Customer(String customerName) {
+        this.mCustomerName = customerName;
     }
 
-    public void addRental(Rental arg) {
-        _rentals.add(arg);
+    public void addRental(Rental rental) {
+        mRentals.add(rental);
     }
 
-    public String getName() {
-        return _name;
+    public String getCustomerName() {
+        return mCustomerName;
     }
 
     public String generateRentalFeesStatement() {
-        double totalAmount = 0;
+        double totalOwedAmount = 0;
         int rewardPoints = 0;
-        Iterator iterator = _rentals.iterator();
-        String result = "Rental Record for:" + getName() + "\n";
+        Iterator iterator = mRentals.iterator();
+        StringBuilder resultStringBuilder = new StringBuilder("Rental Record for:").append(getCustomerName()).append("\n");
         while (iterator.hasNext()) {
-            double thisAmount = 0;
-            Rental each = (Rental) iterator.next();
-
-            //determine amounts for each line
-
-            if (each.getVehicle().getRateCode() == Vehicle.SEDAN || each.getVehicle().getRateCode() == Vehicle.SUV) {
-                thisAmount = 50 * each.getDaysRented() + (each.getMileage() - each.getDaysRented() * 60) * 2;
-            } else {
-                thisAmount = 80 * each.getDaysRented() + (each.getMileage() - each.getDaysRented() * 70) * 3;
-            }
-
+            Rental rental = (Rental) iterator.next();
             // Setup fee, as decided by management in Dec 2016
-            thisAmount = 50.0;
-
-            switch (each.getVehicle().getRateCode()) {
-
-                case Vehicle.SEDAN:
-                    thisAmount += 100 * each.getDaysRented();
-                    if (each.getMileage() > each.getDaysRented() * 50) {
-                        thisAmount += (each.getMileage() - each.getDaysRented() * 50) * 2;
-                    }
-                    break;
-
-
-                case Vehicle.FOURxFOUR:
-                    /* New Price applied
-                    thisAmount += Double(190*each.getDaysRented())
-                    */
-                    thisAmount += 200 * each.getDaysRented();
-                    break;
-
-                case Vehicle.SUV:
-                    thisAmount += 150 * each.getDaysRented();
-                    if (each.getMileage() > each.getDaysRented() * 70)
-                        thisAmount += (each.getMileage() - each.getDaysRented() * 70) * 2;
-                    break;
-                default:
-                    thisAmount += 0;
-            }
-
-            // New rule of 2017, by john
-            if (!(each.getMileage() < 200)) {
-                if (each.getDaysRented() > 10 && each.getVehicle().getRateCode() == Vehicle.FOURxFOUR) {
-                    thisAmount -= thisAmount * 0.05;
-                } else if (each.getVehicle().getRateCode() == Vehicle.SUV) {
-                    thisAmount -= thisAmount * 0.05;
-                }
-            }
-
-            if (!each.isLate()) {
-                // add frequent renter points
-                rewardPoints++;
-
-                // add bonus for SUV rental
-                if ((each.getVehicle().getRateCode() == Vehicle.FOURxFOUR)) rewardPoints *= 2;
-
-                // add bonus for SUV rental
-                if ((each.getVehicle().getRateCode() == Vehicle.SUV) && each.getDaysRented() > 5)
-                    rewardPoints += (each.getDaysRented() - 5);
+            double owedAmount = 50.0;
+            int vehicleCategoryCode = rental.getVehicle().getVehicleCategoryCode();
+            int daysRented = rental.getDaysRented();
+            int kilometersRented = rental.getKilometersRented();
+            owedAmount = getOwedAmountByCategoryCode(owedAmount, vehicleCategoryCode, daysRented, kilometersRented);
+            //discount for renting 4x4 with days rented > 10 days and SUV with 200 or more kms rented
+            owedAmount = discountOwedAmount(owedAmount, vehicleCategoryCode, kilometersRented, daysRented);
+            if (!rental.isLate()) {
+                rewardPoints = calculateRewardPoints(rewardPoints, daysRented, vehicleCategoryCode);
             } else {
-                // strict policy application as of Jan 2018
-                thisAmount += thisAmount * 0.03;
+                // deduction on late in delivery time 0.03 of the calculated owed amount
+                owedAmount += owedAmount * 0.03;
             }
             // show figures for this rental
-            result += "\t\"" + each.getVehicle().getMakeAndModel() + "\"\tLE " +
-                    String.valueOf(thisAmount) + "\n";
-
-            totalAmount += thisAmount;
-
+            resultStringBuilder.append("\t\"").append(rental.getVehicle().getMakeAndModel()).append("\"\tLE ")
+                    .append(String.valueOf(owedAmount)).append("\n");
+            totalOwedAmount += owedAmount;
         }
 
         // add footer lines
-        result += "Amount owed is LE " + String.valueOf(totalAmount) + "\n";
+        resultStringBuilder.append("Amount owed is LE ").append(String.valueOf(totalOwedAmount))
+                .append("\n").append("You earned: ").append(String.valueOf(rewardPoints)).append(" new Reward Points\n\n");
+        return resultStringBuilder.toString();
+    }
 
-        result += "You earned: " + String.valueOf(rewardPoints) +
-                " new Reward Points\n\n";
-        return result;
+    private double discountOwedAmount(double owedAmount, int vehicleCategoryCode, int kilometersRented, int daysRented) {
+        if (kilometersRented >= 200) {
+            if ((daysRented > 10 && vehicleCategoryCode == Vehicle.FOURxFOUR) || vehicleCategoryCode == Vehicle.SUV) {
+                owedAmount -= owedAmount * 0.05;
+            }
+        }
+        return owedAmount;
+    }
+
+    private int calculateRewardPoints(int rewardPoints, int daysRented, int vehicleCategoryCode) {
+        rewardPoints++;
+        // add bonus for FOURxFOUR rental
+        if ((vehicleCategoryCode == Vehicle.FOURxFOUR)) rewardPoints *= 2;
+        // add bonus for SUV rental and daysRented > 5 (incremental points for every extra day)
+        if ((vehicleCategoryCode == Vehicle.SUV) && daysRented > 5)
+            rewardPoints += (daysRented - 5);
+        return rewardPoints;
+    }
+
+    private double getOwedAmountByCategoryCode(double owedAmount, int vehicleCategoryCode, int daysRented, int kilometersRented) {
+        switch (vehicleCategoryCode) {
+            case Vehicle.SEDAN:
+                owedAmount += 100 * daysRented;
+                if (kilometersRented > daysRented * 50) {
+                    owedAmount += (kilometersRented - daysRented * 50) * 2;
+                }
+                break;
+            case Vehicle.FOURxFOUR:
+                owedAmount += 200 * daysRented;
+                break;
+
+            case Vehicle.SUV:
+                owedAmount += 150 * daysRented;
+                if (kilometersRented > daysRented * 70)
+                    owedAmount += (kilometersRented - daysRented * 70) * 2;
+                break;
+            default:
+                owedAmount += 0;
+        }
+        return owedAmount;
     }
 }

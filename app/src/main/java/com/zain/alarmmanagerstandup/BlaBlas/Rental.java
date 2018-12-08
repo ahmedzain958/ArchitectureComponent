@@ -2,19 +2,19 @@ package com.zain.alarmmanagerstandup.BlaBlas;
 
 public class Rental {
     private Vehicle _vehicle;
-    private int _kilometersRented;
+    private int mKilometersRented;
     private int _daysRented;
     private boolean _lateFee;
 
-    public Rental(Vehicle vehicle, int mileage,int daysRented,boolean lateFee) {
-        _vehicle = vehicle;
-        _kilometersRented = mileage;
-        _daysRented=daysRented;
-        _lateFee=lateFee;
+    public Rental(Vehicle vehicle, int kilometersRented, int daysRented, boolean lateFee) {
+        this._vehicle = vehicle;
+        this.mKilometersRented = kilometersRented;
+        this._daysRented = daysRented;
+        this._lateFee = lateFee;
     }
 
-    public int getMileage() {
-        return _kilometersRented;
+    public int getKilometersRented() {
+        return mKilometersRented;
     }
 
     public Vehicle getVehicle() {
