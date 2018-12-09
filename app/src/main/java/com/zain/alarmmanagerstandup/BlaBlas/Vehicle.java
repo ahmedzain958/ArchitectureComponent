@@ -1,9 +1,7 @@
 package com.zain.alarmmanagerstandup.BlaBlas;
 
 public class Vehicle {
-    public static final int SUV = 2;
-    public static final int SEDAN = 0;
-    public static final int FOURxFOUR = 1;
+
     private String mMakeAndModel;
     private int mVehicleCategoryCode;
 
@@ -16,11 +14,7 @@ public class Vehicle {
         return mVehicleCategoryCode;
     }
 
-    public void setVehicleCategoryCode(int vehicleCategoryCode) {
-        mVehicleCategoryCode = vehicleCategoryCode;
-    }
-
-    public String getMakeAndModel() {
+    String getMakeAndModel() {
         return mMakeAndModel;
     }
 }

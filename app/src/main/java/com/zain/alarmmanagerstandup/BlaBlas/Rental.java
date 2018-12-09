@@ -1,31 +1,31 @@
 package com.zain.alarmmanagerstandup.BlaBlas;
 
-public class Rental {
-    private Vehicle _vehicle;
+class Rental {
+    private Vehicle mVehicle;
     private int mKilometersRented;
-    private int _daysRented;
-    private boolean _lateFee;
+    private int mDaysRented;
+    private boolean mIsLate;
 
-    public Rental(Vehicle vehicle, int kilometersRented, int daysRented, boolean lateFee) {
-        this._vehicle = vehicle;
+    Rental(Vehicle vehicle, int kilometersRented, int daysRented, boolean isLate) {
+        this.mVehicle = vehicle;
         this.mKilometersRented = kilometersRented;
-        this._daysRented = daysRented;
-        this._lateFee = lateFee;
+        this.mDaysRented = daysRented;
+        this.mIsLate = isLate;
     }
 
-    public int getKilometersRented() {
+     int getKilometersRented() {
         return mKilometersRented;
     }
 
-    public Vehicle getVehicle() {
-        return _vehicle;
+     Vehicle getVehicle() {
+        return mVehicle;
     }
 
-    public int getDaysRented() {
-        return _daysRented;
+     int getDaysRented() {
+        return mDaysRented;
     }
 
-    public boolean isLate() {
-        return _lateFee;
+     boolean isLate() {
+        return mIsLate;
     }
 }
