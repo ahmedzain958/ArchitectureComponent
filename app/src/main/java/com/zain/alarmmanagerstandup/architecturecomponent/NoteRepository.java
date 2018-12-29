@@ -1,17 +1,16 @@
 package com.zain.alarmmanagerstandup.architecturecomponent;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.persistence.room.Delete;
 import android.os.AsyncTask;
+import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-public class NoteRepository {
+ class NoteRepository {
     private NoteDao noteDao;
     private LiveData<List<Note>> allNotes;
 
-    public NoteRepository(Application application) {
+     NoteRepository(Application application) {
         NoteDatabase noteDatabase = NoteDatabase.getInstance(application);
         noteDao = noteDatabase.noteDao();
         allNotes = noteDao.getAllNotes();
@@ -21,19 +20,19 @@ public class NoteRepository {
         return allNotes;
     }
 
-    public void deleteNote(Note note) {
+     void deleteNote(Note note) {
         new DeletingNote(noteDao).execute(note);
     }
 
-    public void insertNote(Note note) {
+     void insertNote(Note note) {
         new InsertingNote(noteDao).execute(note);
     }
 
-    public void updateNote(Note note) {
+     void updateNote(Note note) {
         new UpdatingNote(noteDao).execute(note);
     }
 
-    public void deleteAllNotes() {
+     void deleteAllNotes() {
         new DeleteAllNotes(noteDao).execute();
     }
 
@@ -43,7 +42,7 @@ public class NoteRepository {
     static class DeletingNote extends AsyncTask<Note, Void, Void> {
         private NoteDao noteDao;
 
-        public DeletingNote(NoteDao noteDao) {
+        DeletingNote(NoteDao noteDao) {
             this.noteDao = noteDao;
         }
 
@@ -58,7 +57,7 @@ public class NoteRepository {
     static class InsertingNote extends AsyncTask<Note, Void, Void> {
         private NoteDao noteDao;
 
-        public InsertingNote(NoteDao noteDao) {
+         InsertingNote(NoteDao noteDao) {
             this.noteDao = noteDao;
         }
 
@@ -73,7 +72,7 @@ public class NoteRepository {
     static class UpdatingNote extends AsyncTask<Note, Void, Void> {
         private NoteDao noteDao;
 
-        public UpdatingNote(NoteDao noteDao) {
+         UpdatingNote(NoteDao noteDao) {
             this.noteDao = noteDao;
         }
 
@@ -88,7 +87,7 @@ public class NoteRepository {
     static class DeleteAllNotes extends AsyncTask<Void, Void, Void> {
         private NoteDao noteDao;
 
-        public DeleteAllNotes(NoteDao noteDao) {
+         DeleteAllNotes(NoteDao noteDao) {
             this.noteDao = noteDao;
         }
 

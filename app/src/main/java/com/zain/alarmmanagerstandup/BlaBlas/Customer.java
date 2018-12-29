@@ -88,7 +88,9 @@ class Customer {
         jsonStatement.append("      ],\n").append("      \"owedAmount\": ").append(totalOwedAmount).append(",\n").append("      \"rewards\": ").append(rewardPoints + "\n").append(
                 "    }\n").append("  ]\n").append(
                 "}");
+
         return jsonStatement.toString();
+
     }
 
     private double discountOwedAmount(double owedAmount, int vehicleCategoryCode, int kilometersRented, int daysRented) {
